@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const API_URL = import.meta.env.VITE_API_URL;
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -8,7 +12,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("http://localhost:3000/auth/login", {
+    const res = await fetch(`${API_URL}/auth/logined`, {
       method: "POST",
       credentials: "include",
       headers: {
@@ -19,6 +23,12 @@ function Login() {
 
     const data = await res.json();
     setMessage(data.message);
+    setUsername(data.user.username);
+
+    // İsteğin başarılı olup olmadığını kontrol et
+    if (res.ok) {
+      navigate("/dashboard", { state: { message, username } });
+    }
   };
 
   return (
